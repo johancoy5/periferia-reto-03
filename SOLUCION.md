@@ -1,4 +1,4 @@
-SOLUCIÓN · Reto 03
+SOLUCIÓN · Reto 03 - Entrega final
 1. Problema
 La digitación manual de órdenes de compra genera errores y dificulta controlar aprobaciones y medir órdenes retroactivas.
 2. Arquitectura
