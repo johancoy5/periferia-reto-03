@@ -4,7 +4,7 @@ import type { ChatMessage } from "./adapter.js";
 
 export class GeminiAdapter {
   readonly provider = "Google Gemini";
-  readonly model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  readonly model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
   private client: GoogleGenAI | null;
 
