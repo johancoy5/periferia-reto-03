@@ -1,0 +1,7 @@
+import {readFile,writeFile,mkdir,appendFile} from "node:fs/promises";import path from "node:path";import type {OrdenCompra,SapAdapter} from "./adapter.js";
+export class MockSap implements SapAdapter {constructor(private directory:string){} private get file(){return path.join(this.directory,"out/sap/ordenes.jsonl")}
+private async all():Promise<Array<{numero_oc:string;fecha:string;orden:OrdenCompra}>>{try{return (await readFile(this.file,"utf8")).trim().split("\n").filter(Boolean).map(x=>JSON.parse(x) as {numero_oc:string;fecha:string;orden:OrdenCompra})}catch{return []}}
+async consultarProveedor(nit:string){const p=JSON.parse(await readFile(path.join(this.directory,"fixtures/reto-03/maestros/proveedores.json"),"utf8")) as Array<{nit:string;codigo_sap:string;activo:boolean}>;const found=p.find(x=>x.nit===nit);return found?{codigo_sap:found.codigo_sap,activo:found.activo}:null}
+async buscarOrdenPorReferencia(id:string){const found=(await this.all()).find(x=>x.orden.referencia.solicitud_id===id);return found?{numero_oc:found.numero_oc}:null}
+async crearOrden(orden:OrdenCompra){const old=(await this.all());const exists=old.find(x=>x.orden.referencia.solicitud_id===orden.referencia.solicitud_id);if(exists)return {numero_oc:exists.numero_oc,fecha:exists.fecha};const numero_oc=String(4500000001+old.length);const fecha=new Date().toISOString();await mkdir(path.dirname(this.file),{recursive:true});await appendFile(this.file,JSON.stringify({numero_oc,fecha,orden})+"\n");return {numero_oc,fecha}}
+}
